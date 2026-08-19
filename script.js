@@ -24,6 +24,20 @@
 
   var gsap = window.gsap;
   gsap.registerPlugin(window.ScrollTrigger);
+
+  // Start motion pas wanneer de pagina zichtbaar is (laden in achtergrondtab:
+  // rAF/timers staan dan stil en de intro zou bevroren blijven op opacity 0).
+  if (document.hidden) {
+    document.addEventListener("visibilitychange", function onVisible() {
+      if (document.hidden) return;
+      document.removeEventListener("visibilitychange", onVisible);
+      initMotion();
+    });
+  } else {
+    initMotion();
+  }
+
+  function initMotion() {
   document.documentElement.classList.add("gsap-on");
 
   // Safety timeout: na 3s hero-intro definitief zichtbaar, wat er ook gebeurt.
@@ -129,5 +143,6 @@
   } catch (e) {
     // Bij elke fout: alles tonen
     gsap.set("[data-hero], [data-reveal]", { clearProps: "all", opacity: 1, y: 0 });
+  }
   }
 })();
